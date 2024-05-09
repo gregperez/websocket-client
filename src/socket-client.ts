@@ -1,11 +1,18 @@
 import {Manager, Socket} from "socket.io-client";
 
-export const connectToServer = (/*url: string*/) => {
-  const manager = new Manager('http://localhost:3000/socket.io/socket.io.js');
+let socket: Socket;
 
-  const socket = manager.socket('/');
+export const connectToServer = (token: string) => {
+  const manager = new Manager('http://localhost:3000/socket.io/socket.io.js', {
+    extraHeaders: {
+      authentication: `${token}`
+    },
+  });
 
-  addListeners(socket);
+  socket?.removeAllListeners();
+  socket = manager.socket('/');
+
+  addListeners();
 
   // Copilot generated this code
   /*const socket = io(url);
@@ -18,7 +25,7 @@ export const connectToServer = (/*url: string*/) => {
   return socket;*/
 }
 
-const addListeners = (socket: Socket) => {
+const addListeners = () => {
     const messageForm = document.querySelector<HTMLFormElement>('#message-form')!;
     const messageInput = document.querySelector<HTMLInputElement>('#message-input')!;
     const messagesUl = document.querySelector<HTMLUListElement>('#messages-ul')!;
